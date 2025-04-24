@@ -1,0 +1,59 @@
+from midiutil import MIDIFile
+
+# Create a MIDI file
+midi = MIDIFile(1)  # One track
+track = 0
+midi.addTrackName(track, 0, "Lo-fi Mellow Beat")
+midi.addTempo(track, 0, 84)  # Tempo 84 BPM
+
+# Define instrument (Lo-Fi drum kit, Electric Piano, Bass)
+drum_instrument = 9  # Standard drum kit
+piano_instrument = 5  # Electric piano
+bass_instrument = 33  # Electric bass (finger)
+
+# Add tracks for each instrument
+midi.addProgramChange(track, 0, 0, drum_instrument)
+midi.addProgramChange(track, 1, 0, piano_instrument)
+midi.addProgramChange(track, 2, 0, bass_instrument)
+
+# Drum beat: Kick, Snare, Hi-hat (simplified pattern)
+# Kick: note 36 (C1), Snare: note 38 (D1), Hi-hat: note 42 (Closed Hi-hat)
+drum_pattern = [
+    (0, 36), (1, 42), (2, 38), (3, 42), (4, 36), (5, 42), (6, 38), (7, 42)
+]
+
+for time, note in drum_pattern:
+    midi.addNote(track, 0, note, time, 0.5, 100)
+
+# Piano Chord Progression (Am, F, C, G)
+# Chord notes for Am: A3, C4, E4
+# Chord notes for F: F3, A3, C4
+# Chord notes for C: C3, E3, G3
+# Chord notes for G: G3, B3, D4
+chords = [
+    [(57, 60, 64)],  # Am (A3, C4, E4)
+    [(53, 57, 60)],  # F (F3, A3, C4)
+    [(48, 52, 55)],  # C (C3, E3, G3)
+    [(55, 59, 62)],  # G (G3, B3, D4)
+]
+
+# Add piano chords in sequence
+for i, chord in enumerate(chords):
+    for note in chord[0]:
+        midi.addNote(track, 1, note, i * 4, 4, 100)  # Chords last 4 beats
+
+# Bassline (simple follow the root notes of the chords)
+bassline = [
+    57, 53, 48, 55  # A3, F3, C3, G3
+]
+
+# Add bass notes
+for i, note in enumerate(bassline):
+    midi.addNote(track, 2, note, i * 4, 4, 100)  # Bassline lasts 4 beats
+
+# Save the MIDI file
+output_path = "/mnt/data/lofi_mellow_beat.mid"
+with open(output_path, "wb") as f:
+    midi.writeFile(f)
+
+output_path  # Path to the generated MIDI file
